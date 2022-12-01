@@ -1,5 +1,12 @@
 use std::{fs, path::Path};
 
+pub fn read_file_to_string_vector(file_name: &str) -> Vec<String> {
+    read_file_to_string(&file_name)
+        .lines()
+        .map(|s| s.to_string())
+        .collect()
+}
+
 pub fn read_file_to_string(file_name: &str) -> String {
     let file_path_buffer = std::env::current_dir().unwrap();
     let file_path = file_path_buffer.to_str().unwrap();
