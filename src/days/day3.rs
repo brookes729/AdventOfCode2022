@@ -13,12 +13,16 @@ pub fn run_day() {
 
     for line in file_contents {
         let letter_halves = line.split_at(line.len() / 2);
-        for char in letter_halves.1.chars() {
-            if letter_halves.0.contains(&char.to_string()) {
-                increase_total(char, &mut running_total_one);
-                break;
-            }
-        }
+        let first_half_set: HashSet<char> = letter_halves.0.chars().collect();
+        let second_half_set: HashSet<char> = letter_halves.1.chars().collect();
+
+        let shared_char: &char = first_half_set
+            .iter()
+            .filter(|k| second_half_set.contains(k))
+            .next()
+            .unwrap();
+
+        increase_total(*shared_char, &mut running_total_one);
 
         if bag_one.is_empty() {
             bag_one = line.chars().collect();
@@ -26,16 +30,16 @@ pub fn run_day() {
             bag_two = line.chars().collect();
         } else if bag_three.is_empty() {
             bag_three = line.chars().collect();
-            let shared_one_two: HashSet<&char> = bag_one.intersection(&bag_two).collect();
-            let shared_one_three: HashSet<&char> = bag_one.intersection(&bag_three).collect();
-            //let shared_two_three: HashSet<&char> = bag_two.intersection(&bag_three).collect();
-            let shared_all: HashSet<&&char> =
-                shared_one_two.intersection(&shared_one_three).collect();
 
-            if !shared_all.is_empty() {
-                let matched_char = ***shared_all.iter().next().unwrap();
-                increase_total(matched_char, &mut running_total_two);
-            }
+            let shared_char: &char = bag_one
+                .iter()
+                .filter(|k| bag_two.contains(k))
+                .filter(|k| bag_three.contains(k))
+                .next()
+                .unwrap();
+
+            increase_total(*shared_char, &mut running_total_two);
+
             bag_one = HashSet::new();
             bag_two = HashSet::new();
             bag_three = HashSet::new();
