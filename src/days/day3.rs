@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use crate::helpers::file_helper::read_file_to_string_vector;
 
 pub fn run_day() {
@@ -7,14 +5,14 @@ pub fn run_day() {
 
     let mut running_total_one = 0;
     let mut running_total_two = 0;
-    let mut bag_one: HashSet<char> = HashSet::new();
-    let mut bag_two: HashSet<char> = HashSet::new();
-    let mut bag_three: HashSet<char> = HashSet::new();
+    let mut bag_one: Vec<char> = Vec::new();
+    let mut bag_two: Vec<char> = Vec::new();
+    let mut bag_three: Vec<char> = Vec::new();
 
     for line in file_contents {
         let letter_halves = line.split_at(line.len() / 2);
-        let first_half_set: HashSet<char> = letter_halves.0.chars().collect();
-        let second_half_set: HashSet<char> = letter_halves.1.chars().collect();
+        let first_half_set: Vec<char> = letter_halves.0.chars().collect();
+        let second_half_set: Vec<char> = letter_halves.1.chars().collect();
 
         let shared_char: &char = first_half_set
             .iter()
@@ -40,9 +38,9 @@ pub fn run_day() {
 
             increase_total(*shared_char, &mut running_total_two);
 
-            bag_one = HashSet::new();
-            bag_two = HashSet::new();
-            bag_three = HashSet::new();
+            bag_one = Vec::new();
+            bag_two = Vec::new();
+            bag_three = Vec::new();
         }
     }
 
