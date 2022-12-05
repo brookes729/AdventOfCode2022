@@ -3,33 +3,24 @@ use std::collections::{hash_map::Entry, HashMap, VecDeque};
 use crate::helpers::{file_helper::read_file_to_string_vector, parse_helper::string_to_number};
 
 pub fn run_day() {
-    let file_contents = read_file_to_string_vector("day5.txt");
-
     let mut stacks: HashMap<usize, VecDeque<char>> = HashMap::new();
 
-    // Get the starting point
-    get_starting_stack(file_contents, &mut stacks);
-
-    let file_contents = read_file_to_string_vector("day5.txt");
-
-    // instructions for 1
-    perform_instructions(file_contents, &mut stacks, true);
-
+    get_starting_stack(&mut stacks);
+    perform_instructions(&mut stacks, true);
+    print!("Part One: ");
     for stack_number in 1..=stacks.len() {
         print!(
             "{}",
             stacks.get_mut(&stack_number).unwrap().pop_back().unwrap()
         )
-    } // instructions for 1
-    println!("Part Two: ");
+    }
 
-    // Get the starting point
+    println!();
     let mut stacks: HashMap<usize, VecDeque<char>> = HashMap::new();
-    let file_contents = read_file_to_string_vector("day5.txt");
-    get_starting_stack(file_contents, &mut stacks);
-    let file_contents = read_file_to_string_vector("day5.txt");
-    perform_instructions(file_contents, &mut stacks, false);
+    get_starting_stack(&mut stacks);
+    perform_instructions(&mut stacks, false);
 
+    print!("Part Two: ");
     for stack_number in 1..=stacks.len() {
         print!(
             "{}",
@@ -38,11 +29,8 @@ pub fn run_day() {
     }
 }
 
-fn perform_instructions(
-    file_contents: Vec<String>,
-    stacks: &mut HashMap<usize, VecDeque<char>>,
-    move_single: bool,
-) {
+fn perform_instructions(stacks: &mut HashMap<usize, VecDeque<char>>, move_single: bool) {
+    let file_contents = read_file_to_string_vector("day5.txt");
     let mut instructions_found = false;
     for line in file_contents {
         if !instructions_found {
@@ -53,20 +41,21 @@ fn perform_instructions(
         }
         // example: move 1 from 2 to 1
         let instruction: Vec<&str> = line.split(' ').collect();
+        let number_of_crates = string_to_number(instruction[1].to_string());
         let start = string_to_number(instruction[3].to_string()) as usize;
         let finish = string_to_number(instruction[5].to_string()) as usize;
         if move_single {
-            for _ in 1..=string_to_number(instruction[1].to_string()) {
+            for _ in 1..=number_of_crates {
                 let crate_to_move = stacks.get_mut(&start).unwrap().pop_back().unwrap();
                 stacks.get_mut(&finish).unwrap().push_back(crate_to_move);
             }
         } else {
             let mut crates_being_moved: Vec<char> = Vec::new();
 
-            for _ in 1..=string_to_number(instruction[1].to_string()) {
+            for _ in 1..=number_of_crates {
                 crates_being_moved.push(stacks.get_mut(&start).unwrap().pop_back().unwrap());
             }
-            for _ in 1..=string_to_number(instruction[1].to_string()) {
+            for _ in 1..=number_of_crates {
                 stacks
                     .get_mut(&finish)
                     .unwrap()
@@ -76,7 +65,8 @@ fn perform_instructions(
     }
 }
 
-fn get_starting_stack(file_contents: Vec<String>, stacks: &mut HashMap<usize, VecDeque<char>>) {
+fn get_starting_stack(stacks: &mut HashMap<usize, VecDeque<char>>) {
+    let file_contents = read_file_to_string_vector("day5.txt");
     for line in file_contents {
         if line.starts_with(" 1") {
             break;
