@@ -6,6 +6,7 @@ pub mod day4;
 pub mod day5;
 pub mod day6;
 pub mod day7;
+pub mod day8;
 
 // pub fn run_day_by_string(day_string: String) {
 //     let day_number = day_string.parse::<u32>().unwrap();
@@ -22,6 +23,7 @@ pub fn run_day(day_number: u32) {
         5 => day5::run_day(),
         6 => day6::run_day(),
         7 => day7::run_day(),
+        8 => day8::run_day(),
         _ => println!("We've not go to that day yet"),
     }
 }
