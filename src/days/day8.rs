@@ -5,6 +5,7 @@ pub fn run_day() {
 
     let mut trees: Vec<Vec<u32>> = Vec::new();
     let mut visible: Vec<Vec<bool>> = Vec::new();
+    let mut part_two_score = 0;
 
     for line in file_contents {
         let mut row_of_trees: Vec<u32> = Vec::new();
@@ -17,7 +18,11 @@ pub fn run_day() {
     for tree_row in 0..=trees.len() - 1 {
         let mut visible_row: Vec<bool> = Vec::new();
         for tree_column in 0..=trees[tree_row].len() - 1 {
-            visible_row.push(tree_visible(&trees, tree_row, tree_column));
+            let (visible, score) = tree_visible(&trees, tree_row, tree_column);
+            visible_row.push(visible);
+            if score > part_two_score {
+                part_two_score = score;
+            }
         }
         visible.push(visible_row);
     }
@@ -33,15 +38,25 @@ pub fn run_day() {
         })
         .sum();
 
-    println!("Part one: {}", visible_count)
+    println!("Part one: {}", visible_count);
+    println!("Part two: {}", part_two_score);
 }
 
-fn tree_visible(trees: &Vec<Vec<u32>>, tree_row: usize, tree_column: usize) -> bool {
+fn tree_visible(trees: &Vec<Vec<u32>>, tree_row: usize, tree_column: usize) -> (bool, u32) {
     let tree_value = trees[tree_row][tree_column];
-    tree_visible_north(&trees, tree_value, tree_row, tree_column)
-        || tree_visible_south(&trees, tree_value, tree_row, tree_column)
-        || tree_visible_east(&trees, tree_value, tree_row, tree_column)
-        || tree_visible_west(&trees, tree_value, tree_row, tree_column)
+    let (tree_visible_n, tree_score_n) =
+        tree_visible_north(&trees, tree_value, tree_row, tree_column);
+    let (tree_visible_s, tree_score_s) =
+        tree_visible_south(&trees, tree_value, tree_row, tree_column);
+    let (tree_visible_e, tree_score_e) =
+        tree_visible_east(&trees, tree_value, tree_row, tree_column);
+    let (tree_visible_w, tree_score_w) =
+        tree_visible_west(&trees, tree_value, tree_row, tree_column);
+
+    (
+        tree_visible_n || tree_visible_s || tree_visible_e || tree_visible_w,
+        tree_score_n * tree_score_s * tree_score_e * tree_score_w,
+    )
 }
 
 fn tree_visible_north(
@@ -49,13 +64,14 @@ fn tree_visible_north(
     tree_value: u32,
     tree_row: usize,
     tree_column: usize,
-) -> bool {
+) -> (bool, u32) {
     if tree_row == 0 {
-        true
-    } else if trees[tree_row][tree_column] > trees[tree_row - 1][tree_column] {
-        tree_visible_north(trees, tree_value, tree_row - 1, tree_column)
+        (true, 0)
+    } else if tree_value > trees[tree_row - 1][tree_column] {
+        let next_tree = tree_visible_north(trees, tree_value, tree_row - 1, tree_column);
+        (next_tree.0, 1 + next_tree.1)
     } else {
-        false
+        (false, 1)
     }
 }
 fn tree_visible_south(
@@ -63,13 +79,14 @@ fn tree_visible_south(
     tree_value: u32,
     tree_row: usize,
     tree_column: usize,
-) -> bool {
+) -> (bool, u32) {
     if tree_row == trees.len() - 1 {
-        true
+        (true, 0)
     } else if tree_value > trees[tree_row + 1][tree_column] {
-        tree_visible_south(trees, tree_value, tree_row + 1, tree_column)
+        let next_tree = tree_visible_south(trees, tree_value, tree_row + 1, tree_column);
+        (next_tree.0, 1 + next_tree.1)
     } else {
-        false
+        (false, 1)
     }
 }
 fn tree_visible_east(
@@ -77,13 +94,14 @@ fn tree_visible_east(
     tree_value: u32,
     tree_row: usize,
     tree_column: usize,
-) -> bool {
+) -> (bool, u32) {
     if tree_column == trees[tree_row].len() - 1 {
-        true
+        (true, 0)
     } else if tree_value > trees[tree_row][tree_column + 1] {
-        tree_visible_east(trees, tree_value, tree_row, tree_column + 1)
+        let next_tree = tree_visible_east(trees, tree_value, tree_row, tree_column + 1);
+        (next_tree.0, 1 + next_tree.1)
     } else {
-        false
+        (false, 1)
     }
 }
 fn tree_visible_west(
@@ -91,12 +109,13 @@ fn tree_visible_west(
     tree_value: u32,
     tree_row: usize,
     tree_column: usize,
-) -> bool {
+) -> (bool, u32) {
     if tree_column == 0 {
-        true
+        (true, 0)
     } else if tree_value > trees[tree_row][tree_column - 1] {
-        tree_visible_west(trees, tree_value, tree_row, tree_column - 1)
+        let next_tree = tree_visible_west(trees, tree_value, tree_row, tree_column - 1);
+        (next_tree.0, 1 + next_tree.1)
     } else {
-        false
+        (false, 1)
     }
 }
