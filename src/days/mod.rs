@@ -1,5 +1,6 @@
 pub mod day0;
 pub mod day1;
+pub mod day10;
 pub mod day2;
 pub mod day3;
 pub mod day4;
@@ -26,6 +27,7 @@ pub fn run_day(day_number: u32) {
         7 => day7::run_day(),
         8 => day8::run_day(),
         9 => day9::run_day(),
+        10 => day10::run_day(),
         _ => println!("We've not go to that day yet"),
     }
 }
