@@ -21,7 +21,7 @@ pub fn run_day() {
     let jets = file_contents.chars();
     let mut next_jet = 0;
 
-    let mut part_one = 0;
+    //let mut part_one = 0;
 
     let mut known_patterns: HashMap<(Vec<u8>, i64, i64), (i64, i64)> = HashMap::default();
 
