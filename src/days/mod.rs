@@ -56,6 +56,7 @@ pub fn run_day(day_number: u32) {
         22 => day22::run_day(),
         23 => day23::run_day(),
         24 => day24::run_day(),
+        25 => day24::run_day(),
         _ => println!("We've not go to that day yet"),
     }
 }
